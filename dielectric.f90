@@ -7,13 +7,13 @@ contains
 
 	!-------------------------------------------------------------------------------------
 	!-------------------------------------------------------------------------------------
-	Function G1(rho, mu, sigBH)
+	Function G1(rho, mu2, sigBH)
 		Use g_mvt,      Only : g_atContact
 		Use Laguerre,   Only : Laguerre_fast
 
 		Implicit None
 
-		Real(DP)     :: rho, mu, sigBH
+		Real(DP)     :: rho, mu2, sigBH
 		Real(DP)     :: G1
 
 		Real(DP)     :: g_eff
@@ -21,7 +21,7 @@ contains
 		Real(DP)     :: m23, eta, mu23, sigBH6
 		Integer(I4B) :: IFl
 
-		Intent(IN)   :: rho, mu, sigBH
+		Intent(IN)   :: rho, mu2, sigBH
 
 
 		IFl    =  2     ! denoting a Sutherland potential
@@ -30,11 +30,10 @@ contains
 		eta    =  rho * (PI/SIX) * sigBH*sigBH*sigBH
 		g_eff  =  g_atContact(eta, IFl, r)
 
-		mu23   =  mu*mu
-		mu23   =  mu23*mu23*mu23 ! dimensionless mu squared to the third
+		mu23   =  mu2*mu2*mu2 ! dimensionless mu squared to the third
 		sigBH6 =  sigBH * sigBH * sigBH * sigBH * sigBH * sigBH
    
-	 	G1     =  (EIGHT/75.D0) * rho * (PI/SIX) * g_eff * mu23 * (1/sigBH6) * 1.8
+	 	G1     =  (EIGHT/75.D0) * rho * (PI/SIX) * g_eff * mu23 * (1/sigBH6) 
 	 	!print*, k_B, temp, ONE, (ONE/(k_B*temp))
 	 	!print*, aux, mu**2, sigma**3, mu**2 /sigma**3, (ONE/k_B*temp), (ONE/perm0x4pi) 
 
@@ -44,19 +43,19 @@ contains
 
 	!-------------------------------------------------------------------------------------
 	!-------------------------------------------------------------------------------------
-	Function dielectric_const(rho, mu, sigBH, scale)
+	Function dielectric_const(rho, mu2, sigBH, scale)
 		Implicit None
-		Real(DP)     :: rho, mu, sigBH, scale
+		Real(DP)     :: rho, mu2, sigBH, scale
 		Real(DP)     :: dielectric_const
 		Real(DP)     :: g_kirkwood, y, aux
 		Real(DP)     :: d_tmp, eta
-		Intent(IN)   :: rho, mu, sigBH
+		Intent(IN)   :: rho, mu2, sigBH
 		OPTIONAL     :: scale
 
 		if (.NOT. PRESENT(scale)) scale = 1.0
 
-		g_kirkwood       = 1 + G1(rho, mu, sigBH)
-		y                = FOUR*PI * rho * mu*mu * scale 
+		g_kirkwood       = 1 + G1(rho, mu2, sigBH)
+		y                = FOUR*PI * rho * mu2 * scale 
 		aux              = ONE + y*g_kirkwood
 		dielectric_const = QUARTER *(aux + SQRT(aux*aux+8))
 		d_tmp            = QUARTER *(aux - SQRT(aux*aux+8))
