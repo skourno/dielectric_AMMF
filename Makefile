@@ -20,7 +20,9 @@ BOBJECTS=nrtype.o\
 	phys_consts.o\
 	Laguerre_fast.o\
 	g_mvt.o\
-	dielectric.o
+	WCA.o\
+	dielectric.o\
+	diel_models.o
 
 OBJECTS =  $(BOBJECTS) $(MOBJECTS)
 
